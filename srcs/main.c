@@ -61,7 +61,9 @@ int main(int ac, char **av ,char **env)
 	p_lst = get_path(e_lst);
 	while(1)
 	{
+		ft_printf(GREEN);
 		write(1, "msh$>", 5);
+		ft_printf(STOP);
 		get_next_line(0, &buf);
 		args = get_args(buf);
 		if(!is_built(args[0]))

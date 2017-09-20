@@ -23,3 +23,5 @@ void	disp_env(t_env *lst);
 t_path 	*get_path(t_env *e_lst);
 void	built(char **args, char **env);
 int 	is_built(char *cmd);
+t_path 	*init_path(char *path);
+t_env 	*init_env(char *env_line);

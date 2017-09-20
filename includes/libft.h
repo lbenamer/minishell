@@ -20,6 +20,19 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # define BUFF_SIZE 1024
+# define STOP		"\033[00m"
+# define BOLD		"\033[1m"
+# define ITALIC		"\033[3m"
+# define UNDERLINE	"\033[4m"
+# define BLACK		"\033[30m"
+# define RED		"\033[31m"
+# define GREEN		"\033[32m"
+# define YELLOW		"\033[33;01m"
+# define BLUE		"\033[34m"
+# define MAGENTA	"\033[35m"
+# define CYAN		"\033[36;01m"
+# define WHITE		"\033[37m"
+
 
 typedef struct		s_list
 {
