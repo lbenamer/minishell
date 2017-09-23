@@ -9,6 +9,7 @@ t_path 	*init_path(char *path)
 	new->next = NULL;
 	return (new);
 }
+
 t_env 	*init_env(char *env_line)
 {
 	char 	**tmp;
@@ -19,6 +20,6 @@ t_env 	*init_env(char *env_line)
 	new->name = ft_strdup(tmp[0]);
 	new->value = ft_strdup(tmp[1]);
 	new->next = NULL;
-	free(tmp); // need to make a real func free for tab string // 
+	free_tab(tmp);
 	return (new);
 }

@@ -1,12 +1,31 @@
 #include "minishell.h"
 
-void	disp_env(t_env *lst)
+char	*cut_pmt(char *str)
 {
-	while(lst)
+	int i;
+	int len;
+	char *ret;
+
+	i = ft_strlen(str);
+	len = i;
+	if(!ft_strcmp(str, "/"))
+		return (str);
+	while(str[--i])
 	{
-		printf("name = %s | value = %s\n", lst->name, lst->value);
-		lst = lst->next;
+		if(str[i] == '/')
+		{
+			ret	= ft_strsub(str, i + 1,len - i + 1);
+			free(str);
+			return (ret);
+		}
 	}
+	return (str);
+}
+
+void	get_pmt(t_msh *sh)
+{
+	sh->pmt = cut_pmt(getcwd(NULL, 0));
+	// printf("pmt = %s\n", sh->pmt);
 }
 
 t_path 	*get_path(t_env *e_lst)
@@ -29,7 +48,7 @@ t_path 	*get_path(t_env *e_lst)
 				p_lst->next = init_path(tmp[i]);
 				p_lst = p_lst->next;
 			}
-			free(tmp);
+			free_tab(tmp);
 			return (ret);
 		}
 		e_lst = e_lst->next;
@@ -39,9 +58,9 @@ t_path 	*get_path(t_env *e_lst)
 
 t_env 	*get_env(char **env)
 {
-	t_env *lst_env;
-	t_env *tmp;
-	int i;
+	t_env	*lst_env;
+	t_env	*tmp;
+	int		i;
 	
 	lst_env = init_env(env[0]);
 	tmp = lst_env;

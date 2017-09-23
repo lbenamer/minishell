@@ -5,71 +5,88 @@
 
 char	**get_args(char *buf)
 {
-	char **args;
-	int i;
+	char 	**args;
+	int 	i;
 
 	i = -1;
 	args = ft_strsplit_space(buf);
-	ft_printstab(args);
+	// ft_printstab(args);
 	return (args);
 }
 
-void	launch(char **args, char **env, t_path *lst)
+char	**dup_env(char	**env)
+{
+	int 	i;
+	int		size;
+	char	**ret;
+
+	size = ft_size_tab(env);
+	i = -1;
+	ret = (char**)ft_memalloc(sizeof(char*) * (size + 1));
+	while(++i < size)
+		ret[i] = ft_strdup(env[i]);
+	return (ret);
+}
+void	launch(t_msh sh)
 {
 	pid_t 	pid;
 	char 	*tmp;
-	struct stat buf;
+	struct 	stat buf;
 
-	// if(!ft_strcmp(args[0], "cd"))
-	// 	return (0);
 	printf("launch\n");
 	pid  = fork();
 	if(!pid)
 	{
-		while(lst)
+		while(sh.path)
 		{
-			lst->path = ft_strjoinf(lst->path, "/", 1);
-			tmp = ft_strjoin(lst->path, args[0]);
+			sh.path->path = ft_strjoinf(sh.path->path, "/", 1);
+			tmp = ft_strjoin(sh.path->path, sh.args[0]);
 			if(!stat(tmp, &buf))
 			{
-				execve(tmp, args, env);
+				execve(tmp, sh.args, sh.env);
+				free(tmp);
 				exit(1);
-		//		return (1);
 			}
-			lst = lst->next;
+			free(tmp);
+			sh.path = sh.path->next;
 		}
 		printf("unknow command\n");
 		exit(0);
-		// return (0);
 	}
 	else
 		waitpid(pid, NULL, 0);
-	// return (1);
 }
 
 int main(int ac, char **av ,char **env)
 {
-	char 	**args;
+	// char 	**args;
  	char 	*buf;
- 	t_env 	*e_lst;
- 	t_path 	*p_lst;
+ 	// t_env 	*e_lst;
+ 	// t_path 	*p_lst;
+ 	t_msh	sh;
 
 	ac = 1;
 	av = NULL;
 	buf = NULL;
-	e_lst = get_env(env);
-	p_lst = get_path(e_lst);
+	sh.env_lst = get_env(env);
+	sh.path = get_path(sh.env_lst);
+	sh.env = dup_env(env);
 	while(1)
 	{
+		get_pmt(&sh);
 		ft_printf(GREEN);
-		write(1, "msh$>", 5);
+		// write(1, "msh$>", 6);
+		ft_printf("(%s) msh$> ", sh.pmt);
 		ft_printf(STOP);
+		free(sh.pmt);
 		get_next_line(0, &buf);
-		args = get_args(buf);
-		if(!is_built(args[0]))
-			launch(args, env, p_lst);
+		sh.args = get_args(buf);
+		free(buf);
+		if(!is_built(sh.args[0]))
+			launch(sh);
 		else
-			built(args, env);
+			built(&sh);
+		free_tab(sh.args);
 	}
 	return 0;
 }
