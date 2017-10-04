@@ -1,5 +1,48 @@
 #include "minishell.h"
 
+void	free_elem(t_env *elem)
+{
+	free(elem->name);
+	free(elem->value);
+	free(elem);
+}
+
+void	del_elem(t_env *elem)
+{
+	t_env *tmp;
+
+	tmp = elem->next;
+	elem->next = elem->next->next;
+	free_elem(tmp);
+}
+
+void	unset_env(t_msh *sh)
+{
+	t_env *tmp;
+	t_env *env;
+
+	env = sh->env_lst;
+	if(env && !ft_strcmp(env->name, sh->args[1]))
+	{
+		tmp = env->next;
+		free_elem(env);
+		sh->env_lst = tmp;
+		maj_env(sh);
+		return ;
+	}
+	// tmp = env;
+	while(env->next)
+	{
+		if(!ft_strcmp(env->next->name, sh->args[1]))
+		{
+			del_elem(env);
+			maj_env(sh);
+			return ;
+		}
+		env = env->next;
+	}
+	ft_printf("KEYS : %s : does not exist\n", sh->args[1]); // faire func errno mytho //
+}
 
 void	add_env(t_env *env, char *name, char *value)
 {

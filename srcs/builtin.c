@@ -103,4 +103,6 @@ void	built(t_msh *sh)
 		ft_printf("%s\n", sh->args[1]);
 	else if(!ft_strcmp(sh->args[0], "setenv"))
 		set_env(sh);
+	else if(!ft_strcmp(sh->args[0], "unsetenv"))
+		unset_env(sh); // faire la maj env char **//
 }

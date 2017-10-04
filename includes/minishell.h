@@ -39,6 +39,7 @@ void	get_pmt(t_msh *sh);
 int		size_env(t_env *env);
 void	set_env(t_msh *sh);
 void	maj_env(t_msh *sh);
+void	unset_env(t_msh *sh);
 
 
 // execute en premier instant la cmd enssuite check les bin//
