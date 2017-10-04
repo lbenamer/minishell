@@ -42,4 +42,6 @@ void	maj_env(t_msh *sh);
 
 
 // execute en premier instant la cmd enssuite check les bin//
-// copi l env a partir de la lst env en ball pr le add  //
+// cree le pwd si pas de env
+/// cree l env quand de env avc min pwd
+// 

@@ -27,6 +27,34 @@ char	**dup_env(char	**env)
 		ret[i] = ft_strdup(env[i]);
 	return (ret);
 }
+
+int exec_args(t_msh sh)
+{
+	pid_t pid;
+	struct stat buf;
+
+	pid = fork();
+	if(!pid)
+	{
+		if(!stat(sh.args[0], &buf))
+		{
+			printf("ok\n");
+			execve(sh.args[0], sh.args, sh.env);
+			exit(1);
+		}
+		else
+		{
+			printf("else\n");
+			exit(0);
+			return (0);
+		}
+	}
+	else
+		waitpid(pid, NULL, 0);
+	return (1);
+
+}
+
 void	launch(t_msh sh)
 {
 	pid_t 	pid;
@@ -70,6 +98,7 @@ int main(int ac, char **av ,char **env)
 	buf = NULL;
 	sh.env_lst = get_env(env);
 	sh.path = get_path(sh.env_lst);
+	// env = NULL;
 	sh.env = dup_env(env);
 	while(1)
 	{
@@ -80,13 +109,18 @@ int main(int ac, char **av ,char **env)
 		ft_printf(STOP);
 		free(sh.pmt);
 		get_next_line(0, &buf);
-		sh.args = get_args(buf);
-		free(buf);
-		if(!is_built(sh.args[0]))
-			launch(sh);
-		else
-			built(&sh);
-		free_tab(sh.args);
+		if(ft_strlen(buf))
+		{
+			sh.args = get_args(buf);
+			free(buf);
+			exec_args(sh);
+			printf("no exec\n");
+			if(!is_built(sh.args[0]))
+				launch(sh);
+			else
+				built(&sh);
+			free_tab(sh.args);
+		}
 	}
 	return 0;
 }
