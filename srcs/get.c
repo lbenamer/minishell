@@ -14,7 +14,7 @@ char	*cut_pmt(char *str)
 	{
 		if(str[i] == '/')
 		{
-			ret	= ft_strsub(str, i + 1,len - i + 1);
+			ret	= ft_strsub(str, i + 1, len - i + 1);
 			free(str);
 			return (ret);
 		}
@@ -22,9 +22,10 @@ char	*cut_pmt(char *str)
 	return (str);
 }
 
-void	get_pmt(t_msh *sh)
+int	get_pmt(t_msh *sh)
 {
 	sh->pmt = cut_pmt(getcwd(NULL, 0));
+	return (1);
 	// printf("pmt = %s\n", sh->pmt);
 }
 

@@ -72,6 +72,14 @@ void	built_cd(t_msh *sh)
 {
 	struct 	stat buf;
 
+	if(!sh->env_lst)
+	{
+		printf("no env cd\n");
+		sh->env = create_env();
+		sh->env_lst = get_env(sh->env);
+	}
+	if(!sh->args[1])
+		return ;
 	if(!ft_strcmp(sh->args[1], "-"))
 	{
 		chdir(get_old_pwd(sh->env_lst));
@@ -79,7 +87,7 @@ void	built_cd(t_msh *sh)
 	}
 	else if(!stat(sh->args[1], &buf))
 	{
-		ft_printf("hear\n");
+		// ft_printf("hear\n");
 		if(chdir(sh->args[1]) < 0)
 			ft_printf("cd: permission denied: %s\n", sh->args[1]);
 		maj_pwd(sh);
@@ -91,7 +99,7 @@ void	built_cd(t_msh *sh)
 
 void	built(t_msh *sh)
 {
-	printf("built\n");
+	// printf("built\n");
 
 	if(!ft_strcmp(sh->args[0], "cd"))
 		built_cd(sh);

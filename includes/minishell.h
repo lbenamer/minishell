@@ -35,11 +35,13 @@ int 	is_built(char *cmd);
 t_path 	*init_path(char *path);
 t_env 	*init_env(char *env_line);
 void	free_tab(char **tab);
-void	get_pmt(t_msh *sh);
+int		get_pmt(t_msh *sh);
 int		size_env(t_env *env);
 void	set_env(t_msh *sh);
 void	maj_env(t_msh *sh);
 void	unset_env(t_msh *sh);
+char 	**create_env(void);
+int syntax_set(char **args);
 
 
 // execute en premier instant la cmd enssuite check les bin//

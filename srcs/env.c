@@ -1,5 +1,18 @@
 #include "minishell.h"
 
+char 	**create_env(void)
+{
+	char *tmp;
+	char **ret;
+
+	ret = (char**)ft_memalloc(sizeof(char*) * 3);
+	tmp = getcwd(NULL, 0);
+	ret[0] = ft_strjoin("PWD=", tmp);
+	ret[1] = ft_strjoin("OLDPWD=", tmp);
+	free(tmp);
+	return (ret);
+}
+
 void	free_elem(t_env *elem)
 {
 	free(elem->name);
@@ -31,7 +44,7 @@ void	unset_env(t_msh *sh)
 		return ;
 	}
 	// tmp = env;
-	while(env->next)
+	while(env && env->next)
 	{
 		if(!ft_strcmp(env->next->name, sh->args[1]))
 		{
@@ -51,15 +64,33 @@ void	add_env(t_env *env, char *name, char *value)
 	new = (t_env*)ft_memalloc(sizeof(t_env));
 	new->name = ft_strdup(name);
 	new->value = ft_strdup(value);
-	while(env->next)
+	while(env && env->next)
 		env = env->next;
 	env->next = new;
+}
+
+t_env *new_env(char *name, char *value)
+{
+	t_env *new;
+
+	new = (t_env*)ft_memalloc(sizeof(t_env));
+	new->name = ft_strdup(name);
+	new->value = ft_strdup(value);
+	new->next = NULL;
+	return (new);
 }
 
 void	set_env(t_msh *sh)
 {
 	t_env *tmp;
 
+	if(ft_size_tab(sh->args) > 3)
+	{
+		ft_printf("setenv: Too many arguments. \n");
+		return ;
+	}
+	if(!syntax_set(sh->args))
+		return ;
 	tmp = sh->env_lst;
 	if(!sh->args[1])
 	{
@@ -70,7 +101,7 @@ void	set_env(t_msh *sh)
 	{
 		if(!ft_strcmp(tmp->name, sh->args[1]))
 		{
-			printf("hear\n");
+			// printf("hear\n");
 			free(tmp->value);
 			if(sh->args[2])
 				tmp->value = ft_strdup(sh->args[2]);
@@ -81,6 +112,12 @@ void	set_env(t_msh *sh)
 		}
 		tmp = tmp->next;
 	}
-	add_env(sh->env_lst, sh->args[1], sh->args[2]);
+	if(sh->env_lst)
+		add_env(sh->env_lst, sh->args[1], sh->args[2]);
+	else
+	{
+		printf("new_env\n");
+		sh->env_lst = new_env(sh->args[1], sh->args[2]);
+	}
 	maj_env(sh);
 }

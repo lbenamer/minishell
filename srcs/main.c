@@ -38,13 +38,13 @@ int exec_args(t_msh sh)
 	{
 		if(!stat(sh.args[0], &buf))
 		{
-			printf("ok\n");
+			// printf("ok\n");
 			execve(sh.args[0], sh.args, sh.env);
 			exit(1);
 		}
 		else
 		{
-			printf("else\n");
+			// printf("else\n");
 			exit(0);
 			return (0);
 		}
@@ -61,7 +61,7 @@ void	launch(t_msh sh)
 	char 	*tmp;
 	struct 	stat buf;
 
-	printf("launch\n");
+	// printf("launch\n");
 	pid  = fork();
 	if(!pid)
 	{
@@ -85,28 +85,33 @@ void	launch(t_msh sh)
 		waitpid(pid, NULL, 0);
 }
 
+void print_pmt(char *pmt)
+{
+	ft_printf(GREEN);
+	write(1, "(", 1);
+	write(1, pmt, ft_strlen(pmt));
+	write(1, ") msh$> ", 8);
+	ft_printf(STOP);
+}
+
 int main(int ac, char **av ,char **env)
 {
-	// char 	**args;
  	char 	*buf;
- 	// t_env 	*e_lst;
- 	// t_path 	*p_lst;
  	t_msh	sh;
 
 	ac = 1;
 	av = NULL;
 	buf = NULL;
+	sh.pmt = NULL;
+	//env = NULL;
+	if(!env[0])
+		env = create_env();
 	sh.env_lst = get_env(env);
 	sh.path = get_path(sh.env_lst);
-	// env = NULL;
 	sh.env = dup_env(env);
-	while(1)
+	while(get_pmt(&sh))
 	{
-		get_pmt(&sh);
-		ft_printf(GREEN);
-		// write(1, "msh$>", 6);
-		ft_printf("(%s) msh$> ", sh.pmt);
-		ft_printf(STOP);
+		print_pmt(sh.pmt);
 		free(sh.pmt);
 		get_next_line(0, &buf);
 		if(ft_strlen(buf))
@@ -114,7 +119,7 @@ int main(int ac, char **av ,char **env)
 			sh.args = get_args(buf);
 			free(buf);
 			exec_args(sh);
-			printf("no exec\n");
+			// printf("no exec\n");
 			if(!is_built(sh.args[0]))
 				launch(sh);
 			else

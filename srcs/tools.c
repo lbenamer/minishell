@@ -28,3 +28,14 @@ int	size_env(t_env *env)
 		env = env->next;
 	return (ret);
 }
+
+int syntax_set(char **args)
+{
+	if(args && args[1])
+		if(ft_strchr(args[1], '='))
+		{
+			ft_printf("setenv: Variable name must contain alphanumeric characters.\n");
+			return (0);
+		}
+	return (1);
+}
