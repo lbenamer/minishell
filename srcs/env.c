@@ -35,6 +35,8 @@ void	unset_env(t_msh *sh)
 	t_env *env;
 
 	env = sh->env_lst;
+	if(!sh->args[1])
+		return ;
 	if(env && !ft_strcmp(env->name, sh->args[1]))
 	{
 		tmp = env->next;
@@ -63,7 +65,10 @@ void	add_env(t_env *env, char *name, char *value)
 
 	new = (t_env*)ft_memalloc(sizeof(t_env));
 	new->name = ft_strdup(name);
-	new->value = ft_strdup(value);
+	if(value)
+		new->value = ft_strdup(value);
+	else
+		new->value = ft_strnew(0);
 	while(env && env->next)
 		env = env->next;
 	env->next = new;
@@ -75,7 +80,10 @@ t_env *new_env(char *name, char *value)
 
 	new = (t_env*)ft_memalloc(sizeof(t_env));
 	new->name = ft_strdup(name);
-	new->value = ft_strdup(value);
+	if(value)
+		new->value = ft_strdup(value);
+	else
+		new->value = ft_strnew(0);
 	new->next = NULL;
 	return (new);
 }
@@ -117,6 +125,7 @@ void	set_env(t_msh *sh)
 	else
 	{
 		printf("new_env\n");
+		// free_tab(sh->env);
 		sh->env_lst = new_env(sh->args[1], sh->args[2]);
 	}
 	maj_env(sh);

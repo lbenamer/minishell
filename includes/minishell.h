@@ -26,6 +26,12 @@ typedef struct s_msh
 	char	*pmt;
 }				t_msh;
 
+typedef struct s_cmd
+{
+	char *line;
+	struct s_cmd *next;
+}				t_cmd;
+
 // char	*lex_bin(char *cmd);
 t_env 	*get_env(char **env);
 void	disp_env(t_env *lst);
@@ -41,10 +47,14 @@ void	set_env(t_msh *sh);
 void	maj_env(t_msh *sh);
 void	unset_env(t_msh *sh);
 char 	**create_env(void);
-int syntax_set(char **args);
-
-
-// execute en premier instant la cmd enssuite check les bin//
-// cree le pwd si pas de env
-/// cree l env quand de env avc min pwd
-// 
+int 	syntax_set(char **args);
+t_cmd	*add_cmd(t_cmd *lst, char *line);
+char 	*find_env(t_env *env, char *name);
+void	add_env(t_env *env, char *name, char *value);
+int 	mod_value(t_env *env, char *name, char *value);	
+void	err_no(int n, char *s);
+// fonction errno mytho obligatoire 
+// check tous les chdir possible et message d erreur si pas ls droit ou path inconnu :
+// unknow commande 
+// profondeur env SHLVL;
+// le split du path avc ":" // modif strsplit si string = a char c ;

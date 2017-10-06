@@ -23,6 +23,7 @@ SRCS    	=   srcs/main.c \
 				srcs/builtin.c \
 				srcs/tools.c \
 				srcs/env.c \
+				srcs/hist.c 
 
 OBJS    	=   $(SRCS:.c=.o)
 

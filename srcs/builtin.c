@@ -25,7 +25,9 @@ void	maj_env(t_msh *sh)
 	while(env)
 	{
 		tmp = ft_strjoin(env->name, "=");
+		// printf("tmp = %s\n", tmp);
 		sh->env[i++] = ft_strjoin(tmp, env->value);
+		// printf("env[i] = %s\n", sh->env[i - 1]);
 		free(tmp);
 		env = env->next;
 	}
@@ -37,23 +39,21 @@ void	maj_pwd(t_msh *sh)
 	char *pwd;
 	t_env *tmp;
 
+	pwd = NULL;
 	tmp = sh->env_lst;
-	while(tmp)
+	
+	if((pwd = find_env(tmp, "PWD")))
 	{
-		if(!ft_strcmp(tmp->name, "PWD"))
-		{
-			pwd = tmp->value;
-			tmp->value = getcwd(NULL, 0);
-			// free(buf);
-		}
-		if(!ft_strcmp(tmp->name, "OLDPWD"))
-		{
-			free(tmp->value);
-			tmp->value = ft_strdup(pwd);
-			free(pwd);
-		}
-		tmp = tmp->next;
+		// printf("find pwd = %s\n", pwd);
+		mod_value(tmp, "PWD", getcwd(NULL, 0));
 	}
+	if(find_env(tmp, "OLDPWD"))
+	{
+		// printf("old = %s\n", old);
+		mod_value(tmp, "OLDPWD", ft_strdup(pwd));
+		//free(pwd);
+	}	
+	// disp_env(tmp);
 	maj_env(sh);
 }
 
@@ -71,29 +71,84 @@ char 	*get_old_pwd(t_env *env)
 void	built_cd(t_msh *sh)
 {
 	struct 	stat buf;
+	char 	*tmp;
 
+	if(sh->env_lst && !find_env(sh->env_lst, "PWD"))
+	{
+		printf("no PWD\n");
+		tmp = getcwd(NULL, 0);
+		add_env(sh->env_lst, "PWD", tmp);
+		free(tmp);
+		maj_pwd(sh);
+	}
+	if(sh->env_lst && !find_env(sh->env_lst, "OLDPWD"))
+	{
+		tmp = getcwd(NULL, 0);
+		add_env(sh->env_lst, "OLDPWD", tmp);
+		free(tmp);
+		maj_pwd(sh);
+	}
 	if(!sh->env_lst)
 	{
-		printf("no env cd\n");
+		// printf("no env cd\n");
+		free_tab(sh->env);
 		sh->env = create_env();
 		sh->env_lst = get_env(sh->env);
 	}
-	if(!sh->args[1])
-		return ;
-	if(!ft_strcmp(sh->args[1], "-"))
+	// if(!sh->args[1] || !ft_strcmp(sh->args[1], "~"))
+	// {
+	// 	tmp = find_env(sh->env_lst, "HOME");
+	// 	if(tmp && !stat(tmp, &buf))
+	// 	{
+	// 		if(chdir(tmp) < 0)
+	// 			err_no(2, tmp);
+	// 		maj_pwd(sh);
+	// 	}
+	// 	else
+	// 		err_no(1, tmp);
+	// 	return ;
+	// }
+	// if(!ft_strcmp(sh->args[1], "-"))
+	// {
+	// 	tmp = get_old_pwd(sh->env_lst);
+	// 	if(tmp && !stat(tmp, &buf))
+	// 	{
+	// 		if(chdir(tmp) < 0)
+	// 			err_no(2, tmp);
+	// 		maj_pwd(sh);
+	// 	}
+	// 	else
+	// 		err_no(1, tmp);
+	// 	return ;
+	// }
+	// else if(!stat(sh->args[1], &buf))
+	// {
+	// 	// printf("hear\n");
+	// 	if(chdir(sh->args[1]) < 0)
+	// 		err_no(2, sh->args[1])
+	// 		// ft_printf("cd: permission denied: %s\n", sh->args[1]);
+	// 	// printf("chdir ok\n");
+	// 	maj_pwd(sh);
+	// 	// printf("maj ok \n");
+	// }
+	// else
+	// 	err_no(1, sh->args[1]);
+		// ft_printf("cd: no such file or directory: %s\n", sh->args[1]);
+	if(!sh->args[1] || !ft_strcmp(sh->args[1], "~"))
+		tmp = find_env(sh->env_lst, "HOME");
+	else if(!ft_strcmp(sh->args[1], "-"))
+		tmp = get_old_pwd(sh->env_lst);
+	else
+		tmp = sh->args[1];
+	if(tmp && !stat(tmp, &buf))
 	{
-		chdir(get_old_pwd(sh->env_lst));
-		maj_pwd(sh);
-	}
-	else if(!stat(sh->args[1], &buf))
-	{
-		// ft_printf("hear\n");
-		if(chdir(sh->args[1]) < 0)
-			ft_printf("cd: permission denied: %s\n", sh->args[1]);
+		if(chdir(tmp) < 0)
+			err_no(2, tmp);
 		maj_pwd(sh);
 	}
 	else
-		ft_printf("cd: no such file or directory: %s\n", sh->args[1]);
+		err_no(1, tmp);
+
 }
 
 

@@ -1,29 +1,66 @@
 #include "includes/libft.h"
+//#include "libft.h"
+#include <stdio.h>
+
+static size_t	ft_strnbsplit(const char *s, char c)
+{
+	size_t		i;
+	size_t		j;
+
+	i = 0;
+	j = 0;
+	if (!s)
+		return (0);
+	while (s[i])
+	{
+		if (s[i] != c)
+		{
+			j++;
+			while (s[i] != c && s[i])
+				i++;
+			--i;
+		}
+		i++;
+	}
+	return (j);
+}
+
+char			**ft_strsplit(const char *s, char c)
+{
+	size_t	i;
+	size_t	start;
+	char	**tab;
+	size_t	n;
+
+	n = 0;
+	i = 0;
+	tab = (char**)ft_memalloc(sizeof(char*) * ft_strnbsplit(s, c) + 1);
+	if(!s)
+		return (NULL);
+	printf("ok");
+	while (s[i])
+	{
+		if (s[i] != c)
+		{
+			start = i;
+			while (s[i] != c && s[i])
+				i++;
+			if (!(tab[n++] = ft_strsub(s, start, i - start)))
+				return (NULL);
+			--i;
+		}
+		i++;
+	}
+	tab[n] = 0;
+	return (tab);
+}
 
 int main(int argc, char  **argv, char **env)
 {
-	pid_t pid;
-	// ft_putchar(9);
-	// ft_putchar('\t');
+	char **tab;
 
-	// ft_putchar(10);
-	// ft_putchar('\n');
+	tab = ft_strsplit("::::", ':');
 
-	// ft_putchar(11);
-	// ft_putchar('\v');
-
-	// ft_putchar(12);
-	// ft_putchar('\f');
-
-	// ft_putchar(13);
-	// ft_putchar('\r');
-
-		// ft_putchar(32);
-	// ft_putchar(' ');
-	pid = fork();
-	chdir("/Users/iLak/42/");
-	execve("/bin/ls", argv, env);
-	// sleep(3);
-	exit(1);
+	ft_printstab(tab);
 	return 0;
 }

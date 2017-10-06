@@ -98,26 +98,30 @@ int main(int ac, char **av ,char **env)
 {
  	char 	*buf;
  	t_msh	sh;
+ 	t_cmd *cmd_lst;
 
 	ac = 1;
 	av = NULL;
 	buf = NULL;
 	sh.pmt = NULL;
+	cmd_lst = NULL;
 	//env = NULL;
 	if(!env[0])
 		env = create_env();
 	sh.env_lst = get_env(env);
-	sh.path = get_path(sh.env_lst);
 	sh.env = dup_env(env);
 	while(get_pmt(&sh))
 	{
+		//free la liste path avant reinit // 
+		sh.path = get_path(sh.env_lst);
 		print_pmt(sh.pmt);
-		free(sh.pmt);
+		// free(sh.pmt);
 		get_next_line(0, &buf);
 		if(ft_strlen(buf))
 		{
 			sh.args = get_args(buf);
 			free(buf);
+			cmd_lst = add_cmd(cmd_lst, sh.args[0]);
 			exec_args(sh);
 			// printf("no exec\n");
 			if(!is_built(sh.args[0]))
@@ -126,6 +130,8 @@ int main(int ac, char **av ,char **env)
 				built(&sh);
 			free_tab(sh.args);
 		}
+		else
+			free(buf);
 	}
 	return 0;
 }

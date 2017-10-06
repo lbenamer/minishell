@@ -5,7 +5,8 @@ char	*cut_pmt(char *str)
 	int i;
 	int len;
 	char *ret;
-
+	if(!str)
+		return (NULL);
 	i = ft_strlen(str);
 	len = i;
 	if(!ft_strcmp(str, "/"))
@@ -24,7 +25,16 @@ char	*cut_pmt(char *str)
 
 int	get_pmt(t_msh *sh)
 {
-	sh->pmt = cut_pmt(getcwd(NULL, 0));
+	char *tmp;
+
+	tmp = cut_pmt(getcwd(NULL, 0));
+	if(tmp)
+	{
+		// printf("if tmp\n");
+		free(sh->pmt);
+		sh->pmt = tmp;
+	}
+	// printf("get pmt ok\n");
 	return (1);
 	// printf("pmt = %s\n", sh->pmt);
 }
@@ -37,15 +47,22 @@ t_path 	*get_path(t_env *e_lst)
 	t_path *ret;
 
 	i = 0;
+	p_lst = NULL;
+	tmp = NULL;
 	while(e_lst)
 	{
 		if(!ft_strcmp(e_lst->name, "PATH"))
 		{
+			//printf("loool\n");
 			tmp = ft_strsplit(e_lst->value, ':');
-			p_lst = init_path(tmp[0]);
+			// printf("mdr\n");
+			// ft_printstab(tmp);
+			if (tmp)
+				p_lst = init_path(tmp[0]);
 			ret = p_lst;
-			while(tmp[++i])
+			while(tmp && tmp[++i])
 			{
+				printf("mdr\n");
 				p_lst->next = init_path(tmp[i]);
 				p_lst = p_lst->next;
 			}
