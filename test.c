@@ -37,7 +37,7 @@ char			**ft_strsplit(const char *s, char c)
 	tab = (char**)ft_memalloc(sizeof(char*) * ft_strnbsplit(s, c) + 1);
 	if(!s)
 		return (NULL);
-	printf("ok");
+	// printf("ok");
 	while (s[i])
 	{
 		if (s[i] != c)
@@ -59,8 +59,11 @@ int main(int argc, char  **argv, char **env)
 {
 	char **tab;
 
-	tab = ft_strsplit("::::", ':');
-
+	tab = ft_strsplit("::", ':');
+	if(!tab[0])
+		printf("NULL\n");
+	else
+		printf("tab\n");
 	ft_printstab(tab);
 	return 0;
 }

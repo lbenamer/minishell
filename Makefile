@@ -6,7 +6,7 @@
 #    By: lbenamer <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/09/18 18:16:40 by lbenamer          #+#    #+#              #
-#    Updated: 2016/12/06 05:07:31 by lbenamer         ###   ########.fr        #
+#    Updated: 2017/10/09 14:17:13 by lbenamer         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -40,7 +40,8 @@ clean:
 fclean:     clean
 			$(RM) $(NAME)
 
-re:         fclean all
+re:         fclean
+			make
 
 push:
 			@git add .

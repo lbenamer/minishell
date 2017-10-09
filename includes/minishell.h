@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
-
-
 typedef struct 	s_path
 {
 		struct 	s_path 	*next;
@@ -53,8 +51,11 @@ char 	*find_env(t_env *env, char *name);
 void	add_env(t_env *env, char *name, char *value);
 int 	mod_value(t_env *env, char *name, char *value);	
 void	err_no(int n, char *s);
+void 	free_path(t_path *path);
+void 	level_up(t_env *env);
 // fonction errno mytho obligatoire 
 // check tous les chdir possible et message d erreur si pas ls droit ou path inconnu :
 // unknow commande 
 // profondeur env SHLVL;
 // le split du path avc ":" // modif strsplit si string = a char c ;
+// func del path pr no leakss 

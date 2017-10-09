@@ -28,30 +28,51 @@ char	**dup_env(char	**env)
 	return (ret);
 }
 
-int exec_args(t_msh sh)
+int exec_args(t_msh sh, int *f, int *shlvl)
 {
 	pid_t pid;
 	struct stat buf;
 
+	++*shlvl;
+	printf("f = %d\n", *f);
+	if(!stat(sh.args[0], &buf))
+		++*f;
+	printf("f = %d\n", *f);
 	pid = fork();
+	printf("pid = %d\n", pid);
+	level_up(sh.env_lst);
+	
 	if(!pid)
 	{
+		printf("pid ok\n");
+		ft_printstab(sh.env);
 		if(!stat(sh.args[0], &buf))
 		{
-			// printf("ok\n");
+			printf("stat ok\n");
+			++*f;
 			execve(sh.args[0], sh.args, sh.env);
-			exit(1);
+			// printf("shlvl fils = %d\n", *shlvl);
+			// --*shlvl;
+			// exit(1);
 		}
 		else
 		{
-			// printf("else\n");
+
+		 	printf("stat K.O.\n");
 			exit(0);
+			--*shlvl;
 			return (0);
 		}
 	}
 	else
+	{
+		printf("waitpid\n");
 		waitpid(pid, NULL, 0);
-	return (1);
+		// --*shlvl;
+		// --shlvl;
+	}
+	// printf("shlvl = %d\n", *shlvl);
+	return (0);
 
 }
 
@@ -63,6 +84,7 @@ void	launch(t_msh sh)
 
 	// printf("launch\n");
 	pid  = fork();
+	// printf("pid = %d", pid);
 	if(!pid)
 	{
 		while(sh.path)
@@ -97,6 +119,8 @@ void print_pmt(char *pmt)
 int main(int ac, char **av ,char **env)
 {
  	char 	*buf;
+ 	int 	f;
+ 	int  	shlvl = 1;
  	t_msh	sh;
  	t_cmd *cmd_lst;
 
@@ -112,26 +136,34 @@ int main(int ac, char **av ,char **env)
 	sh.env = dup_env(env);
 	while(get_pmt(&sh))
 	{
-		//free la liste path avant reinit // 
+
+		f = 0;
 		sh.path = get_path(sh.env_lst);
+		// printf("getpath ok\n");
 		print_pmt(sh.pmt);
-		// free(sh.pmt);
 		get_next_line(0, &buf);
 		if(ft_strlen(buf))
 		{
 			sh.args = get_args(buf);
 			free(buf);
 			cmd_lst = add_cmd(cmd_lst, sh.args[0]);
-			exec_args(sh);
-			// printf("no exec\n");
-			if(!is_built(sh.args[0]))
-				launch(sh);
-			else
-				built(&sh);
+			exec_args(sh , &f, &shlvl);
+			// printf("t = %d\n", t);
+			if(!f)
+			{
+				// printf("f = %d\n", f);
+				if(!is_built(sh.args[0]))
+					launch(sh);
+				else
+					built(&sh);
+			}
 			free_tab(sh.args);
 		}
 		else
 			free(buf);
+	 	free_path(sh.path);
+	 	printf("shlvl = %d\n", shlvl);
+	 	printf("one turn finish\n");
 	}
 	return 0;
 }

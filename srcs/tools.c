@@ -1,5 +1,17 @@
 #include "minishell.h"
 
+void level_up(t_env *env)
+{
+	char *tmp;
+	int lvl;
+
+	tmp = find_env(env, "SHLVL");
+	lvl = ft_atoi(tmp);
+	++lvl;
+	tmp = ft_itoa(lvl);
+	mod_value(env, "SHLVL", tmp);
+}
+
 void	err_no(int n, char *s)
 {
 	if(n == 1)
@@ -8,6 +20,39 @@ void	err_no(int n, char *s)
 		ft_printf("cd: permission denied: %s\n", s);
 }
 
+void disp_path(t_path *path)
+{
+	int i = 1;
+	while(path)
+	{
+		printf("path = %s n = %d\n", path->path, i);
+		path = path->next;
+		++i;
+	}
+}
+
+
+void free_path(t_path *path)
+{
+	t_path *tmp;
+
+	// disp_path(path);
+	tmp = NULL;
+	if(path)
+	{
+		// printf("free path 1\n");
+		tmp = path->next;
+		free(path->path);
+		free(path);
+	}
+	while(tmp)
+	{
+		path = tmp->next;
+		free(tmp->path);
+		free(tmp);
+		tmp = path;
+	}
+}
 
 void	disp_env(t_env *lst)
 {

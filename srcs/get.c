@@ -49,20 +49,22 @@ t_path 	*get_path(t_env *e_lst)
 	i = 0;
 	p_lst = NULL;
 	tmp = NULL;
+	// printf("getpath\n");
 	while(e_lst)
 	{
 		if(!ft_strcmp(e_lst->name, "PATH"))
 		{
 			//printf("loool\n");
 			tmp = ft_strsplit(e_lst->value, ':');
-			// printf("mdr\n");
+			// printf("splt ok\n");
 			// ft_printstab(tmp);
-			if (tmp)
+			// printf("stab\n");
+			if (tmp[0])
 				p_lst = init_path(tmp[0]);
 			ret = p_lst;
-			while(tmp && tmp[++i])
+			while(tmp[0] && tmp[++i])
 			{
-				printf("mdr\n");
+				// printf("??\n");
 				p_lst->next = init_path(tmp[i]);
 				p_lst = p_lst->next;
 			}
