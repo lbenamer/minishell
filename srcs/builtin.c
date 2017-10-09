@@ -25,13 +25,10 @@ void	maj_env(t_msh *sh)
 	while(env)
 	{
 		tmp = ft_strjoin(env->name, "=");
-		// printf("tmp = %s\n", tmp);
 		sh->env[i++] = ft_strjoin(tmp, env->value);
-		// printf("env[i] = %s\n", sh->env[i - 1]);
 		free(tmp);
 		env = env->next;
 	}
-	// ft_printstab(sh->env);
 }
 
 void	maj_pwd(t_msh *sh)
@@ -43,17 +40,9 @@ void	maj_pwd(t_msh *sh)
 	tmp = sh->env_lst;
 	
 	if((pwd = find_env(tmp, "PWD")))
-	{
-		// printf("find pwd = %s\n", pwd);
 		mod_value(tmp, "PWD", getcwd(NULL, 0));
-	}
 	if(find_env(tmp, "OLDPWD"))
-	{
-		// printf("old = %s\n", old);
 		mod_value(tmp, "OLDPWD", ft_strdup(pwd));
-		//free(pwd);
-	}	
-	// disp_env(tmp);
 	maj_env(sh);
 }
 
@@ -90,50 +79,10 @@ void	built_cd(t_msh *sh)
 	}
 	if(!sh->env_lst)
 	{
-		// printf("no env cd\n");
 		free_tab(sh->env);
 		sh->env = create_env();
 		sh->env_lst = get_env(sh->env);
 	}
-	// if(!sh->args[1] || !ft_strcmp(sh->args[1], "~"))
-	// {
-	// 	tmp = find_env(sh->env_lst, "HOME");
-	// 	if(tmp && !stat(tmp, &buf))
-	// 	{
-	// 		if(chdir(tmp) < 0)
-	// 			err_no(2, tmp);
-	// 		maj_pwd(sh);
-	// 	}
-	// 	else
-	// 		err_no(1, tmp);
-	// 	return ;
-	// }
-	// if(!ft_strcmp(sh->args[1], "-"))
-	// {
-	// 	tmp = get_old_pwd(sh->env_lst);
-	// 	if(tmp && !stat(tmp, &buf))
-	// 	{
-	// 		if(chdir(tmp) < 0)
-	// 			err_no(2, tmp);
-	// 		maj_pwd(sh);
-	// 	}
-	// 	else
-	// 		err_no(1, tmp);
-	// 	return ;
-	// }
-	// else if(!stat(sh->args[1], &buf))
-	// {
-	// 	// printf("hear\n");
-	// 	if(chdir(sh->args[1]) < 0)
-	// 		err_no(2, sh->args[1])
-	// 		// ft_printf("cd: permission denied: %s\n", sh->args[1]);
-	// 	// printf("chdir ok\n");
-	// 	maj_pwd(sh);
-	// 	// printf("maj ok \n");
-	// }
-	// else
-	// 	err_no(1, sh->args[1]);
-		// ft_printf("cd: no such file or directory: %s\n", sh->args[1]);
 	if(!sh->args[1] || !ft_strcmp(sh->args[1], "~"))
 		tmp = find_env(sh->env_lst, "HOME");
 	else if(!ft_strcmp(sh->args[1], "-"))
@@ -148,14 +97,11 @@ void	built_cd(t_msh *sh)
 	}
 	else
 		err_no(1, tmp);
-
 }
 
 
 void	built(t_msh *sh)
 {
-	// printf("built\n");
-
 	if(!ft_strcmp(sh->args[0], "cd"))
 		built_cd(sh);
 	else if(!ft_strcmp(sh->args[0], "exit"))
@@ -167,5 +113,5 @@ void	built(t_msh *sh)
 	else if(!ft_strcmp(sh->args[0], "setenv"))
 		set_env(sh);
 	else if(!ft_strcmp(sh->args[0], "unsetenv"))
-		unset_env(sh); // faire la maj env char **//
+		unset_env(sh);
 }

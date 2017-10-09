@@ -30,13 +30,10 @@ int	get_pmt(t_msh *sh)
 	tmp = cut_pmt(getcwd(NULL, 0));
 	if(tmp)
 	{
-		// printf("if tmp\n");
 		free(sh->pmt);
 		sh->pmt = tmp;
 	}
-	// printf("get pmt ok\n");
 	return (1);
-	// printf("pmt = %s\n", sh->pmt);
 }
 
 t_path 	*get_path(t_env *e_lst)
@@ -49,22 +46,16 @@ t_path 	*get_path(t_env *e_lst)
 	i = 0;
 	p_lst = NULL;
 	tmp = NULL;
-	// printf("getpath\n");
 	while(e_lst)
 	{
 		if(!ft_strcmp(e_lst->name, "PATH"))
 		{
-			//printf("loool\n");
 			tmp = ft_strsplit(e_lst->value, ':');
-			// printf("splt ok\n");
-			// ft_printstab(tmp);
-			// printf("stab\n");
 			if (tmp[0])
 				p_lst = init_path(tmp[0]);
 			ret = p_lst;
 			while(tmp[0] && tmp[++i])
 			{
-				// printf("??\n");
 				p_lst->next = init_path(tmp[i]);
 				p_lst = p_lst->next;
 			}
@@ -90,6 +81,5 @@ t_env 	*get_env(char **env)
 		lst_env->next = init_env(env[i]);
 		lst_env = lst_env->next;
 	}
-	
 	return (tmp);
 }

@@ -1,15 +1,22 @@
 #include "minishell.h"
 
-void level_up(t_env *env)
+char  **level_up(char **env, int lvl)
 {
-	char *tmp;
-	int lvl;
+	int i;
+	char **new;
+	int size;
 
-	tmp = find_env(env, "SHLVL");
-	lvl = ft_atoi(tmp);
-	++lvl;
-	tmp = ft_itoa(lvl);
-	mod_value(env, "SHLVL", tmp);
+	i = -1;
+	size = ft_size_tab(env);
+	new =  ft_memalloc(sizeof(char*) * (size + 1));
+	while(++i < size)
+	{
+		if(ft_strncmp(env[i], "SHLVL", 5))
+			new[i] = ft_strdup(env[i]);
+		else
+			new[i] = ft_strjoinf("SHLVL=", ft_itoa(lvl), 2);
+	}
+	return (new);
 }
 
 void	err_no(int n, char *s)
@@ -18,6 +25,12 @@ void	err_no(int n, char *s)
 		ft_printf("cd: no such file or directory: %s\n", s);
 	if(n == 2)
 		ft_printf("cd: permission denied: %s\n", s);
+	if(n == 3)
+		ft_printf("msh: command not found: %s\n", s);
+	if(n == 4)
+		ft_printf("KEYS : %s : does not exist\n", s);
+	if(n == 5)
+		ft_printf("setenv: Too many arguments.\n");
 }
 
 void disp_path(t_path *path)
@@ -36,11 +49,9 @@ void free_path(t_path *path)
 {
 	t_path *tmp;
 
-	// disp_path(path);
 	tmp = NULL;
 	if(path)
 	{
-		// printf("free path 1\n");
 		tmp = path->next;
 		free(path->path);
 		free(path);

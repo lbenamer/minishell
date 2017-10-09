@@ -42,21 +42,18 @@ void	unset_env(t_msh *sh)
 		tmp = env->next;
 		free_elem(env);
 		sh->env_lst = tmp;
-		maj_env(sh);
-		return ;
+		return (maj_env(sh));
 	}
-	// tmp = env;
 	while(env && env->next)
 	{
 		if(!ft_strcmp(env->next->name, sh->args[1]))
 		{
 			del_elem(env);
-			maj_env(sh);
-			return ;
+			return(maj_env(sh));
 		}
 		env = env->next;
 	}
-	ft_printf("KEYS : %s : does not exist\n", sh->args[1]); // faire func errno mytho //
+	err_no(4, sh->args[1]);
 }
 
 void	add_env(t_env *env, char *name, char *value)
@@ -93,40 +90,28 @@ void	set_env(t_msh *sh)
 	t_env *tmp;
 
 	if(ft_size_tab(sh->args) > 3)
-	{
-		ft_printf("setenv: Too many arguments. \n");
-		return ;
-	}
+		return (err_no(5, NULL));
 	if(!syntax_set(sh->args))
 		return ;
 	tmp = sh->env_lst;
 	if(!sh->args[1])
-	{
-		ft_printstab(sh->env);
-		return ;
-	}
+		return (ft_printstab(sh->env));
 	while(tmp)
 	{
 		if(!ft_strcmp(tmp->name, sh->args[1]))
 		{
-			// printf("hear\n");
 			free(tmp->value);
 			if(sh->args[2])
 				tmp->value = ft_strdup(sh->args[2]);
 			else
 				tmp->value = ft_strnew(0);
-			maj_env(sh);
-			return ;
+			return (maj_env(sh));
 		}
 		tmp = tmp->next;
 	}
 	if(sh->env_lst)
 		add_env(sh->env_lst, sh->args[1], sh->args[2]);
 	else
-	{
-		printf("new_env\n");
-		// free_tab(sh->env);
 		sh->env_lst = new_env(sh->args[1], sh->args[2]);
-	}
 	maj_env(sh);
 }
