@@ -1,5 +1,35 @@
 #include "minishell.h"
 
+
+int is_exec(size_t n)
+{
+	if(S_IXOTH & n || S_IXGRP & n || S_IXUSR & n)
+		return (1);
+	return (0);
+}
+
+
+int is_path_c(char c)
+{
+	if(c == '.' || c == '/')
+		return (1);
+	return (0);
+}
+
+
+int check_arg(char *arg)
+{
+	int i;
+
+	i = -1;
+	while(arg[++i])
+		if(!is_path_c(arg[i]))
+			return (1);
+	return (0);
+}
+
+
+
 char  **level_up(char **env, int lvl)
 {
 	int i;

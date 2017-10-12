@@ -17,13 +17,11 @@ LIB			=	-L./libft -lft
 NAME    	=   mini
 CPPFLAGS 	= 	-Iincludes
 SRCS    	=   srcs/main.c \
-				srcs/lexor.c \
 				srcs/init.c \
 				srcs/get.c \
 				srcs/builtin.c \
 				srcs/tools.c \
 				srcs/env.c \
-				srcs/hist.c 
 
 OBJS    	=   $(SRCS:.c=.o)
 

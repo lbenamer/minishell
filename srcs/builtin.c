@@ -62,6 +62,7 @@ void	built_cd(t_msh *sh)
 	struct 	stat buf;
 	char 	*tmp;
 
+	// printf("cd start \n");
 	if(sh->env_lst && !find_env(sh->env_lst, "PWD"))
 	{
 		printf("no PWD\n");
@@ -83,6 +84,7 @@ void	built_cd(t_msh *sh)
 		sh->env = create_env();
 		sh->env_lst = get_env(sh->env);
 	}
+
 	if(!sh->args[1] || !ft_strcmp(sh->args[1], "~"))
 		tmp = find_env(sh->env_lst, "HOME");
 	else if(!ft_strcmp(sh->args[1], "-"))
@@ -97,7 +99,36 @@ void	built_cd(t_msh *sh)
 	}
 	else
 		err_no(1, tmp);
+	// printf("cd finish\n");
 }
+
+void	cmd_echo(char **args)
+{
+	int n;
+	int i;
+
+	i = 0;
+	n = 0;
+	if(!args[1])
+	{
+		write(1, "\n", 1);
+		return ;
+	}
+	if(args[1] && !ft_strcmp(args[1], "-n"))
+	{
+		++n;
+		++i;
+	}
+	while(args[++i])
+	{
+		ft_putstr(args[i]);
+		if(args[i + 1])
+			write(1, " ", 1);
+	}
+	if(!n)
+		write(1, "\n", 1);
+}
+
 
 
 void	built(t_msh *sh)
@@ -109,7 +140,7 @@ void	built(t_msh *sh)
 	else if(!ft_strcmp(sh->args[0], "env"))
 		ft_printstab(sh->env);
 	else if(!ft_strcmp(sh->args[0], "echo"))
-		ft_printf("%s\n", sh->args[1]);
+		cmd_echo(sh->args);
 	else if(!ft_strcmp(sh->args[0], "setenv"))
 		set_env(sh);
 	else if(!ft_strcmp(sh->args[0], "unsetenv"))

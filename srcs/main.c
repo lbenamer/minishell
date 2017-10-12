@@ -3,16 +3,6 @@
 #include <sys/wait.h>
 #include "minishell.h"
 
-char	**get_args(char *buf)
-{
-	char 	**args;
-	int 	i;
-
-	i = -1;
-	args = ft_strsplit_space(buf);
-	return (args);
-}
-
 char	**dup_env(char	**env)
 {
 	int 	i;
@@ -48,15 +38,19 @@ int exec_args(t_msh sh, int *f, char **env_f)
 	struct 	stat buf;
 
 	pid = 1;
-	if(!stat(sh.args[0], &buf))
+	if(!ft_strncmp("./", sh.args[0], 2) && !stat(sh.args[0], &buf) && check_arg(sh.args[0]) && is_exec(buf.st_mode))
 	{
+		printf("exec args ok \n");
 		++*f;
 		pid = fork();
 	}
-	if(!pid)	
+	if(!pid)
 	{
 		if(!stat(sh.args[0], &buf))
+		{
 			execve(sh.args[0], sh.args, env_f);
+			exit(1);
+		}
 		else
 			exit(0);
 	}
@@ -78,7 +72,7 @@ void	launch(t_msh sh)
 		{
 			sh.path->path = ft_strjoinf(sh.path->path, "/", 1);
 			tmp = ft_strjoin(sh.path->path, sh.args[0]);
-			if(!stat(tmp, &buf))
+			if(!stat(tmp, &buf) && check_arg(sh.args[0]) && is_exec(buf.st_mode))
 			{
 				execve(tmp, sh.args, sh.env);
 				free(tmp);
@@ -109,13 +103,11 @@ int main(int ac, char **av ,char **env)
  	int 	f;
  	char 	**env_f;
  	t_msh	sh;
- 	t_cmd *cmd_lst;
-
+ 
 	ac = 1;
 	av = NULL;
 	buf = NULL;
 	sh.pmt = NULL;
-	cmd_lst = NULL;
 	if(!env[0])
 		env = create_env();
 	sh.env_lst = get_env(env);
@@ -129,12 +121,11 @@ int main(int ac, char **av ,char **env)
 		if(ft_strlen(buf))
 		{	
 			env_f = fork_env(sh);
-			 printf("fork env ok\n");
-			sh.args = get_args(buf);
+			sh.args = ft_strsplit_space(buf);
 			free(buf);
-			cmd_lst = add_cmd(cmd_lst, sh.args[0]);
-			exec_args(sh , &f, env_f);
-			if(!f)
+			if(sh.args[0] && !is_built(sh.args[0]))
+				exec_args(sh , &f, env_f);
+			if(!f && sh.args[0])
 			{
 				if(!is_built(sh.args[0]))
 					launch(sh);
