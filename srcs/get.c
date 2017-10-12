@@ -1,19 +1,31 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbenamer <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/10/12 14:22:47 by lbenamer          #+#    #+#             */
+/*   Updated: 2017/10/12 14:22:50 by lbenamer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*cut_pmt(char *str)
 {
-	int i;
-	int len;
-	char *ret;
-	if(!str)
+	int		i;
+	int		len;
+	char	*ret;
+	if (!str)
 		return (NULL);
 	i = ft_strlen(str);
 	len = i;
-	if(!ft_strcmp(str, "/"))
+	if (!ft_strcmp(str, "/"))
 		return (str);
-	while(str[--i])
+	while (str[--i])
 	{
-		if(str[i] == '/')
+		if (str[i] == '/')
 		{
 			ret	= ft_strsub(str, i + 1, len - i + 1);
 			free(str);
@@ -28,7 +40,7 @@ int	get_pmt(t_msh *sh)
 	char *tmp;
 
 	tmp = cut_pmt(getcwd(NULL, 0));
-	if(tmp)
+	if (tmp)
 	{
 		free(sh->pmt);
 		sh->pmt = tmp;
@@ -41,20 +53,20 @@ t_path 	*get_path(t_env *e_lst)
 	char 	**tmp;
 	int 	i;
 	t_path 	*p_lst;
-	t_path *ret;
+	t_path	*ret;
 
 	i = 0;
 	p_lst = NULL;
 	tmp = NULL;
-	while(e_lst)
+	while (e_lst)
 	{
-		if(!ft_strcmp(e_lst->name, "PATH"))
+		if (!ft_strcmp(e_lst->name, "PATH"))
 		{
 			tmp = ft_strsplit(e_lst->value, ':');
 			if (tmp[0])
 				p_lst = init_path(tmp[0]);
 			ret = p_lst;
-			while(tmp[0] && tmp[++i])
+			while (tmp[0] && tmp[++i])
 			{
 				p_lst->next = init_path(tmp[i]);
 				p_lst = p_lst->next;
@@ -76,7 +88,7 @@ t_env 	*get_env(char **env)
 	lst_env = init_env(env[0]);
 	tmp = lst_env;
 	i = 0;
-	while(env[++i])
+	while (env[++i])
 	{
 		lst_env->next = init_env(env[i]);
 		lst_env = lst_env->next;

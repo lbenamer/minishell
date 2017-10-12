@@ -1,47 +1,59 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tools.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbenamer <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/10/12 14:22:17 by lbenamer          #+#    #+#             */
+/*   Updated: 2017/10/12 14:22:22 by lbenamer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 
-int is_exec(size_t n)
+int		is_exec(size_t n)
 {
-	if(S_IXOTH & n || S_IXGRP & n || S_IXUSR & n)
+	if (S_IXOTH & n || S_IXGRP & n || S_IXUSR & n)
 		return (1);
 	return (0);
 }
 
 
-int is_path_c(char c)
+int		is_path_c(char c)
 {
-	if(c == '.' || c == '/')
+	if (c == '.' || c == '/')
 		return (1);
 	return (0);
 }
 
 
-int check_arg(char *arg)
+int		check_arg(char *arg)
 {
 	int i;
 
 	i = -1;
-	while(arg[++i])
-		if(!is_path_c(arg[i]))
+	while (arg[++i])
+		if (!is_path_c(arg[i]))
 			return (1);
 	return (0);
 }
 
 
 
-char  **level_up(char **env, int lvl)
+char	**level_up(char **env, int lvl)
 {
-	int i;
-	char **new;
-	int size;
+	int		i;
+	char	**new;
+	int		size;
 
 	i = -1;
 	size = ft_size_tab(env);
 	new =  ft_memalloc(sizeof(char*) * (size + 1));
-	while(++i < size)
+	while (++i < size)
 	{
-		if(ft_strncmp(env[i], "SHLVL", 5))
+		if (ft_strncmp(env[i], "SHLVL", 5))
 			new[i] = ft_strdup(env[i]);
 		else
 			new[i] = ft_strjoinf("SHLVL=", ft_itoa(lvl), 2);
@@ -51,22 +63,22 @@ char  **level_up(char **env, int lvl)
 
 void	err_no(int n, char *s)
 {
-	if(n == 1)
+	if (n == 1)
 		ft_printf("cd: no such file or directory: %s\n", s);
-	if(n == 2)
+	if (n == 2)
 		ft_printf("cd: permission denied: %s\n", s);
-	if(n == 3)
+	if (n == 3)
 		ft_printf("msh: command not found: %s\n", s);
-	if(n == 4)
+	if (n == 4)
 		ft_printf("KEYS : %s : does not exist\n", s);
-	if(n == 5)
+	if (n == 5)
 		ft_printf("setenv: Too many arguments.\n");
 }
 
-void disp_path(t_path *path)
+void	disp_path(t_path *path)
 {
 	int i = 1;
-	while(path)
+	while (path)
 	{
 		printf("path = %s n = %d\n", path->path, i);
 		path = path->next;
@@ -75,18 +87,18 @@ void disp_path(t_path *path)
 }
 
 
-void free_path(t_path *path)
+void	free_path(t_path *path)
 {
 	t_path *tmp;
 
 	tmp = NULL;
-	if(path)
+	if (path)
 	{
 		tmp = path->next;
 		free(path->path);
 		free(path);
 	}
-	while(tmp)
+	while (tmp)
 	{
 		path = tmp->next;
 		free(tmp->path);
@@ -97,7 +109,7 @@ void free_path(t_path *path)
 
 void	disp_env(t_env *lst)
 {
-	while(lst)
+	while (lst)
 	{
 		printf("name = %s | value = %s\n", lst->name, lst->value);
 		lst = lst->next;
@@ -109,9 +121,9 @@ void	free_tab(char **tab)
 	int 	i;
 
 	i = -1;
-	while(tab[++i])
+	while (tab[++i])
 		free(tab[i]);
-	if(tab)
+	if (tab)
 		free(tab);
 }
 
@@ -120,16 +132,16 @@ int	size_env(t_env *env)
 	int ret;
 
 	ret = 0;
-	while(env && ++ret)
+	while (env && ++ret)
 		env = env->next;
 	return (ret);
 }
 
 char *find_env(t_env *env, char *name)
 {
-	while(env)
+	while (env)
 	{
-		if(env->name && !ft_strcmp(env->name, name))
+		if (env->name && !ft_strcmp(env->name, name))
 			return (env->value);
 		env = env->next;
 	}
@@ -138,9 +150,9 @@ char *find_env(t_env *env, char *name)
 
 int 	mod_value(t_env *env, char *name, char *value)
 {
-	while(env)
+	while (env)
 	{
-		if(env->name && !ft_strcmp(name, env->name))
+		if (env->name && !ft_strcmp(name, env->name))
 		{
 			free(env->value);
 			env->value = value;
@@ -152,15 +164,15 @@ int 	mod_value(t_env *env, char *name, char *value)
 }
 
 
-int syntax_set(char **args)
+int		syntax_set(char **args)
 {
 	int i;
 
 	i = -1;
-	if(args && args[1])
+	if (args && args[1])
 	{
-		while(args[1][++i])
-			if(!ft_isalnum(args[1][i]))
+		while (args[1][++i])
+			if (!ft_isalnum(args[1][i]))
 			{
 				ft_printf("setenv: Variable name must contain alphanumeric characters.\n");
 				return (0);

@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbenamer <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/10/12 14:21:54 by lbenamer          #+#    #+#             */
+/*   Updated: 2017/10/12 14:21:55 by lbenamer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-t_path 	*init_path(char *path)
+t_path	*init_path(char *path)
 {
 	t_path *new;
 
@@ -14,7 +26,7 @@ t_env 	*init_env(char *env_line)
 {
 	char 	**tmp;
 	t_env 	*new;
-	
+
 	new = (t_env*)ft_memalloc(sizeof(t_env));
 	tmp = ft_strsplit(env_line, '=');
 	new->name = ft_strdup(tmp[0]);
