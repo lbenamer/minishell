@@ -14,7 +14,7 @@ CC      	=   gcc
 RM      	=   rm -f
 CFLAGS  	=  -Wall -Werror -Wextra
 LIB			=	-L./libft -lft
-NAME    	=   mini
+NAME    	=   minishell
 CPPFLAGS 	= 	-Iincludes
 SRCS    	=   srcs/main.c \
 				srcs/init.c \
