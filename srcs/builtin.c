@@ -54,6 +54,8 @@ void	built_cd(t_msh *sh)
 	struct stat buf;
 	char		*tmp;
 
+	if (ft_size_tab(sh->args) > 2)
+		return (err_no(5, "cd"));
 	check_pwds(sh);
 	if (!sh->args[1] || !ft_strcmp(sh->args[1], "~"))
 		tmp = find_env(sh->env_lst, "HOME");

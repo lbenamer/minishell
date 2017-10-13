@@ -23,7 +23,7 @@ void	err_no(int n, char *s)
 	if (n == 4)
 		ft_printf("KEYS : %s : does not exist\n", s);
 	if (n == 5)
-		ft_printf("setenv: Too many arguments.\n");
+		ft_printf("%s: Too many arguments.\n", s);
 	if (n == 6)
 		ft_printf("cd: not a directory: %s\n", s);
 	if (n == 7)

@@ -86,7 +86,7 @@ void	set_env(t_msh *sh)
 	t_env *tmp;
 
 	if (ft_size_tab(sh->args) > 3)
-		return (err_no(5, NULL));
+		return (err_no(5, "setenv"));
 	if (!syntax_set(sh->args))
 		return ;
 	tmp = sh->env_lst;
