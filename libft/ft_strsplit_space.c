@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "includes/libft.h"
-#include <stdio.h>
 
 static int	count_arg(const char *s)
 {
@@ -36,9 +35,8 @@ static int	count_arg(const char *s)
 	return (j);
 }
 
-char	**ft_strsplit_space(char *s)
+char		**ft_strsplit_space(char *s)
 {
-
 	size_t	i;
 	size_t	start;
 	char	**tab;

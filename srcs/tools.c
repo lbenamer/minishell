@@ -12,55 +12,6 @@
 
 #include "minishell.h"
 
-
-int		is_exec(size_t n)
-{
-	if (S_IXOTH & n || S_IXGRP & n || S_IXUSR & n)
-		return (1);
-	return (0);
-}
-
-
-int		is_path_c(char c)
-{
-	if (c == '.' || c == '/')
-		return (1);
-	return (0);
-}
-
-
-int		check_arg(char *arg)
-{
-	int i;
-
-	i = -1;
-	while (arg[++i])
-		if (!is_path_c(arg[i]))
-			return (1);
-	return (0);
-}
-
-
-
-char	**level_up(char **env, int lvl)
-{
-	int		i;
-	char	**new;
-	int		size;
-
-	i = -1;
-	size = ft_size_tab(env);
-	new =  ft_memalloc(sizeof(char*) * (size + 1));
-	while (++i < size)
-	{
-		if (ft_strncmp(env[i], "SHLVL", 5))
-			new[i] = ft_strdup(env[i]);
-		else
-			new[i] = ft_strjoinf("SHLVL=", ft_itoa(lvl), 2);
-	}
-	return (new);
-}
-
 void	err_no(int n, char *s)
 {
 	if (n == 1)
@@ -73,61 +24,16 @@ void	err_no(int n, char *s)
 		ft_printf("KEYS : %s : does not exist\n", s);
 	if (n == 5)
 		ft_printf("setenv: Too many arguments.\n");
-}
-
-void	disp_path(t_path *path)
-{
-	int i = 1;
-	while (path)
+	if (n == 6)
+		ft_printf("cd: not a directory: %s\n", s);
+	if (n == 7)
 	{
-		printf("path = %s n = %d\n", path->path, i);
-		path = path->next;
-		++i;
+		ft_printf("setenv: ");
+		ft_printf("Variable name must contain alphanumeric characters.\n");
 	}
 }
 
-
-void	free_path(t_path *path)
-{
-	t_path *tmp;
-
-	tmp = NULL;
-	if (path)
-	{
-		tmp = path->next;
-		free(path->path);
-		free(path);
-	}
-	while (tmp)
-	{
-		path = tmp->next;
-		free(tmp->path);
-		free(tmp);
-		tmp = path;
-	}
-}
-
-void	disp_env(t_env *lst)
-{
-	while (lst)
-	{
-		printf("name = %s | value = %s\n", lst->name, lst->value);
-		lst = lst->next;
-	}
-}
-
-void	free_tab(char **tab)
-{
-	int 	i;
-
-	i = -1;
-	while (tab[++i])
-		free(tab[i]);
-	if (tab)
-		free(tab);
-}
-
-int	size_env(t_env *env)
+int		size_env(t_env *env)
 {
 	int ret;
 
@@ -137,7 +43,7 @@ int	size_env(t_env *env)
 	return (ret);
 }
 
-char *find_env(t_env *env, char *name)
+char	*find_env(t_env *env, char *name)
 {
 	while (env)
 	{
@@ -148,7 +54,7 @@ char *find_env(t_env *env, char *name)
 	return (NULL);
 }
 
-int 	mod_value(t_env *env, char *name, char *value)
+int		mod_value(t_env *env, char *name, char *value)
 {
 	while (env)
 	{
@@ -163,7 +69,6 @@ int 	mod_value(t_env *env, char *name, char *value)
 	return (0);
 }
 
-
 int		syntax_set(char **args)
 {
 	int i;
@@ -174,7 +79,7 @@ int		syntax_set(char **args)
 		while (args[1][++i])
 			if (!ft_isalnum(args[1][i]))
 			{
-				ft_printf("setenv: Variable name must contain alphanumeric characters.\n");
+				err_no(7, NULL);
 				return (0);
 			}
 	}

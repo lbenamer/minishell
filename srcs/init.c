@@ -12,6 +12,14 @@
 
 #include "minishell.h"
 
+void	launch_env(t_msh *sh, char **env)
+{
+	if (!env[0])
+		env = create_env();
+	sh->env_lst = get_env(env);
+	sh->env = dup_env(env);
+}
+
 t_path	*init_path(char *path)
 {
 	t_path *new;
@@ -22,10 +30,10 @@ t_path	*init_path(char *path)
 	return (new);
 }
 
-t_env 	*init_env(char *env_line)
+t_env	*init_env(char *env_line)
 {
-	char 	**tmp;
-	t_env 	*new;
+	char	**tmp;
+	t_env	*new;
 
 	new = (t_env*)ft_memalloc(sizeof(t_env));
 	tmp = ft_strsplit(env_line, '=');

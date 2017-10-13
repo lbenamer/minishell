@@ -45,7 +45,7 @@ char			**ft_strsplit(const char *s, char c)
 	n = 0;
 	i = 0;
 	tab = (char**)ft_memalloc(sizeof(char*) * ft_strnbsplit(s, c) + 1);
-	if(!s)
+	if (!s)
 		return (NULL);
 	while (s[i])
 	{

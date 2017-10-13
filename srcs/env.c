@@ -25,22 +25,6 @@ char	**create_env(void)
 	return (ret);
 }
 
-void	free_elem(t_env *elem)
-{
-	free(elem->name);
-	free(elem->value);
-	free(elem);
-}
-
-void	del_elem(t_env *elem)
-{
-	t_env *tmp;
-
-	tmp = elem->next;
-	elem->next = elem->next->next;
-	free_elem(tmp);
-}
-
 void	unset_env(t_msh *sh)
 {
 	t_env *tmp;
@@ -83,7 +67,7 @@ void	add_env(t_env *env, char *name, char *value)
 	env->next = new;
 }
 
-t_env *new_env(char *name, char *value)
+t_env	*new_env(char *name, char *value)
 {
 	t_env *new;
 
@@ -121,9 +105,7 @@ void	set_env(t_msh *sh)
 		}
 		tmp = tmp->next;
 	}
-	if (sh->env_lst)
-		add_env(sh->env_lst, sh->args[1], sh->args[2]);
-	else
-		sh->env_lst = new_env(sh->args[1], sh->args[2]);
+	!sh->env_lst ? sh->env_lst = new_env(sh->args[1], sh->args[2]) :
+	add_env(sh->env_lst, sh->args[1], sh->args[2]);
 	maj_env(sh);
 }

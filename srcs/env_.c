@@ -1,39 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hist.c                                             :+:      :+:    :+:   */
+/*   env_.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbenamer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/12 14:21:48 by lbenamer          #+#    #+#             */
-/*   Updated: 2017/10/12 14:21:50 by lbenamer         ###   ########.fr       */
+/*   Created: 2017/10/13 11:57:47 by lbenamer          #+#    #+#             */
+/*   Updated: 2017/10/13 11:57:48 by lbenamer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_cmd *new_cmd(char *line)
+char	**fork_env(t_msh sh)
 {
-	t_cmd *new;
-	new = (t_cmd*)ft_memalloc(sizeof(t_cmd));
-	if (line)
-		new->line = ft_strdup(line);
-	new->next = NULL;
-	return (new);
+	int		lvl;
+	char	*tmp;
+	char	**ret;
+
+	ret = NULL;
+	lvl = 0;
+	tmp = find_env(sh.env_lst, "SHLVL");
+	if (tmp)
+		lvl = ft_atoi(tmp);
+	ret = level_up(sh.env, ++lvl);
+	return (ret);
 }
 
-t_cmd	*add_cmd(t_cmd *lst, char *line)
+char	**dup_env(char **env)
 {
-	t_cmd *tmp;
+	int		i;
+	int		size;
+	char	**ret;
 
-	if (!lst)
-		lst = new_cmd(line);
-	else
-	{
-		tmp = lst;
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = new_cmd(line);
-	} 
-	return (lst);		
+	size = ft_size_tab(env);
+	i = -1;
+	ret = (char**)ft_memalloc(sizeof(char*) * (size + 1));
+	while (++i < size)
+		ret[i] = ft_strdup(env[i]);
+	return (ret);
 }

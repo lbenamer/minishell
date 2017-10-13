@@ -33,7 +33,6 @@
 # define CYAN		"\033[36;01m"
 # define WHITE		"\033[37m"
 
-
 typedef struct		s_list
 {
 	void			*content;

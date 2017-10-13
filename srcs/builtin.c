@@ -14,10 +14,16 @@
 
 int		is_built(char *cmd)
 {
-	char	*built[6] = {"cd", "setenv", "unsetenv", "exit", "echo", "env"};
+	char	*built[6];
 	int		i;
 
 	i = -1;
+	built[0] = "cd";
+	built[1] = "setenv";
+	built[2] = "unsetenv";
+	built[3] = "exit";
+	built[4] = "echo";
+	built[5] = "env";
 	while (++i < 6)
 		if (!ft_strcmp(cmd, built[i]))
 			return (1);
@@ -43,64 +49,10 @@ void	maj_env(t_msh *sh)
 	}
 }
 
-void	maj_pwd(t_msh *sh)
-{
-	char	*pwd;
-	t_env	*tmp;
-
-	pwd = NULL;
-	tmp = sh->env_lst;
-	if ((pwd = find_env(tmp, "PWD")))
-		mod_value(tmp, "PWD", getcwd(NULL, 0));
-	if (find_env(tmp, "OLDPWD"))
-		mod_value(tmp, "OLDPWD", ft_strdup(pwd));
-	maj_env(sh);
-}
-
-char	*get_old_pwd(t_env *env)
-{
-	while (env)
-	{
-		if (!ft_strcmp(env->name, "OLDPWD"))
-			return (env->value);
-		env = env->next;
-	}
-	return (NULL);
-}
-
-
-
-
-void	check_pwds(t_msh *sh)
-{
-	char *tmp;
-
-	if (sh->env_lst && !find_env(sh->env_lst, "PWD"))
-	{
-		tmp = getcwd(NULL, 0);
-		add_env(sh->env_lst, "PWD", tmp);
-		free(tmp);
-		maj_pwd(sh);
-	}
-	if (sh->env_lst && !find_env(sh->env_lst, "OLDPWD"))
-	{
-		tmp = getcwd(NULL, 0);
-		add_env(sh->env_lst, "OLDPWD", tmp);
-		free(tmp);
-		maj_pwd(sh);
-	}
-	if (!sh->env_lst)
-	{
-		free_tab(sh->env);
-		sh->env = create_env();
-		sh->env_lst = get_env(sh->env);
-	}
-}
-
 void	built_cd(t_msh *sh)
 {
-	struct	stat buf;
-	char	*tmp;
+	struct stat buf;
+	char		*tmp;
 
 	check_pwds(sh);
 	if (!sh->args[1] || !ft_strcmp(sh->args[1], "~"))
@@ -112,7 +64,12 @@ void	built_cd(t_msh *sh)
 	if (tmp && !stat(tmp, &buf))
 	{
 		if (chdir(tmp) < 0)
-			err_no(2, tmp);
+		{
+			if ((buf.st_mode & S_IFMT) != S_IFDIR)
+				err_no(6, tmp);
+			else
+				err_no(2, tmp);
+		}
 		maj_pwd(sh);
 	}
 	else

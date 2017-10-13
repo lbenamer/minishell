@@ -17,6 +17,7 @@ char	*cut_pmt(char *str)
 	int		i;
 	int		len;
 	char	*ret;
+
 	if (!str)
 		return (NULL);
 	i = ft_strlen(str);
@@ -27,7 +28,7 @@ char	*cut_pmt(char *str)
 	{
 		if (str[i] == '/')
 		{
-			ret	= ft_strsub(str, i + 1, len - i + 1);
+			ret = ft_strsub(str, i + 1, len - i + 1);
 			free(str);
 			return (ret);
 		}
@@ -35,7 +36,7 @@ char	*cut_pmt(char *str)
 	return (str);
 }
 
-int	get_pmt(t_msh *sh)
+int		get_pmt(t_msh *sh)
 {
 	char *tmp;
 
@@ -48,22 +49,20 @@ int	get_pmt(t_msh *sh)
 	return (1);
 }
 
-t_path 	*get_path(t_env *e_lst)
+t_path	*get_path(t_env *e_lst)
 {
-	char 	**tmp;
-	int 	i;
-	t_path 	*p_lst;
+	char	**tmp;
+	int		i;
+	t_path	*p_lst;
 	t_path	*ret;
 
 	i = 0;
 	p_lst = NULL;
-	tmp = NULL;
 	while (e_lst)
 	{
 		if (!ft_strcmp(e_lst->name, "PATH"))
 		{
-			tmp = ft_strsplit(e_lst->value, ':');
-			if (tmp[0])
+			if ((tmp = ft_strsplit(e_lst->value, ':')) && tmp[0])
 				p_lst = init_path(tmp[0]);
 			ret = p_lst;
 			while (tmp[0] && tmp[++i])
@@ -79,12 +78,12 @@ t_path 	*get_path(t_env *e_lst)
 	return (NULL);
 }
 
-t_env 	*get_env(char **env)
+t_env	*get_env(char **env)
 {
 	t_env	*lst_env;
 	t_env	*tmp;
 	int		i;
-	
+
 	lst_env = init_env(env[0]);
 	tmp = lst_env;
 	i = 0;

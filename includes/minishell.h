@@ -10,36 +10,38 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include <stdio.h>
-#include <sys/wait.h>
+#ifndef MINISHELL_H
+# define MINISHELL_H
+# include "libft.h"
+# include <stdio.h>
+# include <sys/wait.h>
 
-typedef	struct		s_path
+typedef struct		s_path
 {
-		struct 	s_path 	*next;
-		char			*path;
+	struct s_path	*next;
+	char			*path;
 }					t_path;
 
-typedef	struct s_env
+typedef struct		s_env
 {
-	char 	*name;
-	char 	*value;
-	struct 	s_env *next;
+	char			*name;
+	char			*value;
+	struct s_env	*next;
 }					t_env;
 
-typedef	struct 		s_msh
+typedef struct		s_msh
 {
-	t_env 	*env_lst ;
+	t_env	*env_lst;
 	t_path	*path;
 	char	**env;
 	char	**args;
 	char	*pmt;
 }					t_msh;
 
-typedef	struct 		s_cmd
+typedef struct		s_cmd
 {
-	char *line;
-	struct s_cmd 	*next;
+	char			*line;
+	struct s_cmd	*next;
 }					t_cmd;
 
 t_env				*get_env(char **env);
@@ -55,23 +57,23 @@ int					size_env(t_env *env);
 void				set_env(t_msh *sh);
 void				maj_env(t_msh *sh);
 void				unset_env(t_msh *sh);
-char 				**create_env(void);
+char				**create_env(void);
 int					syntax_set(char **args);
 char				*find_env(t_env *env, char *name);
 void				add_env(t_env *env, char *name, char *value);
-int					mod_value(t_env *env, char *name, char *value);	
+int					mod_value(t_env *env, char *name, char *value);
 void				err_no(int n, char *s);
 void				free_path(t_path *path);
 char				**level_up(char **env, int lvl);
-int 				check_arg(char *arg);
-int				is_exec(size_t n);
-
-// fonction errno mytho obligatoire 
-// check tous les chdir possible et message d erreur si pas ls droit ou path inconnu :
-// unknow commande 
-// profondeur env SHLVL;
-// le split du path avc ":" // modif strsplit si string = a char c ;
-// func del path pr no leaks
-// modif pwd et old quand tout changemebt (- et home)
-//  coder echo propre avc -n et multi args
-// gere le .
+int					check_arg(char *arg);
+int					is_x(size_t n);
+void				launch_env(t_msh *sh, char **env);
+char				**dup_env(char	**env);
+void				check_pwds(t_msh *sh);
+char				*get_old_pwd(t_env *env);
+void				maj_pwd(t_msh *sh);
+char				**fork_env(t_msh sh);
+void				del_elem(t_env *elem);
+void				free_elem(t_env *elem);
+void				print_pmt(char *pmt);
+#endif
