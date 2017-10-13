@@ -18,10 +18,11 @@ int		exec_args(t_msh sh, int *f, char **env_f)
 	struct stat buf;
 
 	pid = 1;
-	if (!ft_strncmp("./", sh.args[0], 2) && !stat(sh.args[0], &buf)
-		&& check_arg(sh.args[0]) && is_x(buf.st_mode))
+	if (stat(sh.args[0], &buf) || !check_arg(sh.args[0]))
+		return (0);
+	if (is_x(buf.st_mode) && (!ft_strncmp("./", sh.args[0], 2)
+		|| sh.args[0][0] == '/'))
 	{
-		printf("exec args ok \n");
 		++*f;
 		pid = fork();
 	}
