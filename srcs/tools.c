@@ -28,9 +28,11 @@ void	err_no(int n, char *s)
 		ft_printf("cd: not a directory: %s\n", s);
 	if (n == 7)
 	{
-		ft_printf("setenv: ");
-		ft_printf("Variable name must contain alphanumeric characters.\n");
+		ft_printf("%s: Variable name must contain", s);
+		ft_printf("alphanumeric characters.\n");
 	}
+	if (n == 8)
+		ft_printf("msh: exec format error: %s\n", s);
 }
 
 int		size_env(t_env *env)
@@ -79,7 +81,7 @@ int		syntax_set(char **args)
 		while (args[1][++i])
 			if (!ft_isalnum(args[1][i]))
 			{
-				err_no(7, NULL);
+				err_no(7, "setenv");
 				return (0);
 			}
 	}

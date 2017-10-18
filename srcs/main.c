@@ -6,7 +6,7 @@
 /*   By: lbenamer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/12 14:22:01 by lbenamer          #+#    #+#             */
-/*   Updated: 2017/10/12 14:22:02 by lbenamer         ###   ########.fr       */
+/*   Updated: 2017/10/13 16:33:42 by lbenamer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ int		exec_args(t_msh sh, int *f, char **env_f)
 	pid = 1;
 	if (stat(sh.args[0], &buf) || !check_arg(sh.args[0]))
 		return (0);
-	if (is_x(buf.st_mode) && (!ft_strncmp("./", sh.args[0], 2)
-		|| sh.args[0][0] == '/'))
+	if (is_x(buf.st_mode) && path_bin(sh.args[0]) && TYPE == S_IFREG)
 	{
 		++*f;
 		pid = fork();
@@ -30,7 +29,8 @@ int		exec_args(t_msh sh, int *f, char **env_f)
 	{
 		if (!stat(sh.args[0], &buf))
 		{
-			execve(sh.args[0], sh.args, env_f);
+			if (execve(sh.args[0], sh.args, env_f))
+				err_no(8, sh.args[0]);
 			exit(1);
 		}
 		else
@@ -52,9 +52,9 @@ void	launch(t_msh sh)
 	{
 		while (sh.path)
 		{
-			sh.path->path = ft_strjoinf(sh.path->path, "/", 1);
-			tmp = ft_strjoin(sh.path->path, sh.args[0]);
-			if (!stat(tmp, &buf) && check_arg(sh.args[0]) && is_x(buf.st_mode))
+			tmp = add_slash(sh.path->path, sh.args[0]);
+			if (!stat(tmp, &buf) && check_arg(sh.args[0]) &&
+				is_x(buf.st_mode) && TYPE == S_IFREG)
 			{
 				execve(tmp, sh.args, sh.env);
 				free(tmp);
@@ -78,7 +78,6 @@ void	exec_msh(t_msh *sh, char *buf)
 	f = 0;
 	env_f = fork_env(*sh);
 	sh->args = ft_strsplit_space(buf);
-	free(buf);
 	if (sh->args[0] && !is_built(sh->args[0]))
 		exec_args(*sh, &f, env_f);
 	if (!f && sh->args[0])
@@ -95,16 +94,20 @@ void	exec_msh(t_msh *sh, char *buf)
 void	minishell(t_msh sh)
 {
 	char	*buf;
+	int		ret;
 
+	ret = 0;
 	while (get_pmt(&sh))
 	{
 		sh.path = get_path(sh.env_lst);
 		print_pmt(sh.pmt);
-		get_next_line(0, &buf);
-		if (buf && buf[0])
+		ret = get_next_line(0, &buf);
+		if (buf && buf[0] && ret)
 			exec_msh(&sh, buf);
+		if (ret > 0)
+			ft_strdel(&buf);
 		else
-			free(buf);
+			exit(0);
 		free_path(sh.path);
 	}
 }

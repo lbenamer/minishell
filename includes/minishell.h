@@ -15,6 +15,7 @@
 # include "libft.h"
 # include <stdio.h>
 # include <sys/wait.h>
+# define TYPE	(buf.st_mode & S_IFMT)
 
 typedef struct		s_path
 {
@@ -76,4 +77,6 @@ char				**fork_env(t_msh sh);
 void				del_elem(t_env *elem);
 void				free_elem(t_env *elem);
 void				print_pmt(char *pmt);
+int					path_bin(char *line);
+char				*add_slash(char *s1, char *s2);
 #endif

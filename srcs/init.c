@@ -43,3 +43,19 @@ t_env	*init_env(char *env_line)
 	free_tab(tmp);
 	return (new);
 }
+
+int		path_bin(char *line)
+{
+	if (!ft_strncmp("./", line, 2) || line[0] == '/')
+		return (1);
+	return (0);
+}
+
+char	*add_slash(char *s1, char *s2)
+{
+	char *ret;
+
+	s1 = ft_strjoinf(s1, "/", 1);
+	ret = ft_strjoin(s1, s2);
+	return (ret);
+}
